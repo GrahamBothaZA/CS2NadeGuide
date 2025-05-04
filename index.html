@@ -13,14 +13,14 @@
             padding: 20px;
         }
         .container {
-            max-width: 800px;
+            max-width: 95%;
             margin: 0 auto;
         }
         h1 {
             text-align: center;
             color: #ff9500;
         }
-        #stage-menu, #nade-menu {
+        #stage-menu, #side-menu, #nade-menu {
             display: flex;
             justify-content: center;
             gap: 10px;
@@ -39,18 +39,23 @@
             background-color: #ff9500;
             color: #1a1a1a;
         }
+        button.active {
+            background-color: #ff9500;
+            color: #1a1a1a;
+        }
         #content {
             text-align: center;
         }
         .nade-details {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 15px;
             margin-top: 20px;
         }
         .nade-image {
             cursor: pointer;
             max-width: 100%;
+            width: 100%;
             height: auto;
             border: 1px solid #ff9500;
             border-radius: 3px;
@@ -72,6 +77,8 @@
             max-height: 90%;
             border: 2px solid #ff9500;
             border-radius: 5px;
+            transition: transform 0.2s;
+            cursor: pointer;
         }
         .modal-close {
             position: absolute;
@@ -87,107 +94,645 @@
     <div class="container">
         <h1>CS2 Nade Guide</h1>
         <div id="stage-menu"></div>
+        <div id="side-menu"></div>
         <div id="nade-menu" style="display: none;"></div>
         <div id="content"></div>
     </div>
 
     <div id="image-modal" class="modal">
-        <span class="modal-close">&times;</span>
+        <span class="modal-close">×</span>
         <img id="modal-image" src="" alt="Enlarged image">
     </div>
 
     <script>
-        // Sample data for stages and nades
         const stages = [
             {
-                name: "Mirage",
-                nades: [
-                    {
-                        name: "A Site Smoke",
-                        description: "Smoke for A site from T spawn",
-                        images: [
-                            "images/mirage_a_smoke_1.jpg",
-                            "images/mirage_a_smoke_2.jpg",
-                            "images/mirage_a_smoke_3.jpg"
-                        ]
-                    },
-                    {
-                        name: "Mid Window Smoke",
-                        description: "Blocks mid window sightline",
-                        images: [
-                            "images/mirage_mid_smoke_1.jpg",
-                            "images/mirage_mid_smoke_2.jpg"
-                        ]
-                    },
-                    {
-                        name: "B Site Molotov",
-                        description: "Molotov for B site from apps",
-                        images: [
-                            "images/mirage_b_molotov_1.jpg",
-                            "images/mirage_b_molotov_2.jpg"
-                        ]
-                    }
-                ]
+                name: "Anubis",
+                sides: {
+                    T: [
+                        {
+                            name: "A Site Smoke",
+                            description: "Smoke for A site from T spawn",
+                            images: [
+                                "images/mirage_t_a_smoke_1.jpg",
+                                "images/mirage_t_a_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "Mid Window Smoke",
+                            description: "Blocks mid window sightline",
+                            images: [
+                                "images/mirage_t_mid_smoke_1.jpg",
+                                "images/mirage_t_mid_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "B Site Molotov",
+                            description: "Molotov for B site from apps",
+                            images: [
+                                "images/mirage_t_b_molotov_1.jpg",
+                                "images/mirage_t_b_molotov_2.jpg"
+                            ]
+                        }
+                    ],
+                    CT: [
+                        {
+                            name: "A Site Retake Smoke",
+                            description: "Smoke for A site retake from CT spawn",
+                            images: [
+                                "images/mirage_ct_a_smoke_1.jpg",
+                                "images/mirage_ct_a_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "Mid Control Flash",
+                            description: "Flash for mid control from CT mid",
+                            images: [
+                                "images/mirage_ct_mid_flash_1.jpg",
+                                "images/mirage_ct_mid_flash_2.jpg"
+                            ]
+                        }
+                    ]
+                }
             },
             {
-                name: "Inferno",
-                nades: [
-                    {
-                        name: "Banana Smoke",
-                        description: "Smoke for banana control",
-                        images: [
-                            "images/inferno_banana_smoke_1.jpg",
-                            "images/inferno_banana_smoke_2.jpg"
-                        ]
-                    },
-                    {
-                        name: "Library Molotov",
-                        description: "Clears library corner",
-                        images: [
-                            "images/inferno_library_molotov_1.jpg",
-                            "images/inferno_library_molotov_2.jpg"
-                        ]
-                    },
-                    {
-                        name: "A Site Flash",
-                        description: "Flash for A site push",
-                        images: [
-                            "images/inferno_a_flash_1.jpg",
-                            "images/inferno_a_flash_2.jpg"
-                        ]
-                    }
-                ]
+                name: "Ancient",
+                sides: {
+                    T: [
+                        {
+                            name: "Banana Smoke",
+                            description: "Smoke for banana control",
+                            images: [
+                                "images/inferno_t_banana_smoke_1.jpg",
+                                "images/inferno_t_banana_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "Library Molotov",
+                            description: "Clears library corner",
+                            images: [
+                                "images/inferno_t_library_molotov_1.jpg",
+                                "images/inferno_t_library_molotov_2.jpg"
+                            ]
+                        }
+                    ],
+                    CT: [
+                        {
+                            name: "Banana Hold Smoke",
+                            description: "Smoke to hold banana from CT",
+                            images: [
+                                "images/inferno_ct_banana_smoke_1.jpg",
+                                "images/inferno_ct_banana_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "A Site Retake Flash",
+                            description: "Flash for A site retake",
+                            images: [
+                                "images/inferno_ct_a_flash_1.jpg",
+                                "images/inferno_ct_a_flash_2.jpg"
+                            ]
+                        }
+                    ]
+                }
             },
             {
                 name: "Dust II",
-                nades: [
-                    {
-                        name: "Long Doors Smoke",
-                        description: "Smoke for long doors",
-                        images: [
-                            "images/dust2_long_smoke_1.jpg",
-                            "images/dust2_long_smoke_2.jpg"
-                        ]
-                    },
-                    {
-                        name: "B Tunnel Smoke",
-                        description: "Blocks B tunnel vision",
-                        images: [
-                            "images/dust2_b_smoke_1.jpg",
-                            "images/dust2_b_smoke_2.jpg"
-                        ]
-                    },
-                    {
-                        name: "Mid Flash",
-                        description: "Flash over mid doors",
-                        images: [
-                            "images/dust2_mid_flash_1.jpg",
-                            "images/dust2_mid_flash_2.jpg"
-                        ]
-                    }
-                ]
+                sides: {
+                    T: [
+                        {
+                            name: "[MID] Xbox smoke",
+                            description: "Line up to right of wall, aim at bottom left quadrant, then <b>jump throw</b>",
+                            images: [
+                                "images/dust_2/dust2_t_xbox_1.jpg",
+                                "images/dust_2/dust2_t_xbox_2.jpg",
+                                "images/dust_2/dust2_t_xbox_3.jpg"
+                            ]
+                        },
+						{
+                            name: "[MID] CT smoke",
+                            description: "Tuck into corner of the box, then aim at mark on the wall, then <b>regular throw</b>",
+                            images: [
+                                "images/dust_2/dust2_t_mid_to_ct_1.jpg",
+                                "images/dust_2/dust2_t_mid_to_ct_2.jpg"
+                            ]
+                        },
+						{
+                            name: "[MID] Door smoke",
+                            description: "Tuck into corner of the door, then aim just out of the bottom left side of the panel, then <b>Medium (Left + Right click) throw</b>, helps to follow from one end to the other to get position right",
+                            images: [
+                                "images/dust_2/dust2_t_mid_door_1.jpg",
+								"images/dust_2/dust2_t_mid_door_2.jpg",
+								"images/dust_2/dust2_t_mid_door_3.jpg",
+                                "images/dust_2/dust2_t_mid_door_4.jpg"
+                            ]
+                        },
+                        {
+                            name: "[Long] Corner Smoke",
+                            description: "Line up with end of wall, aim at in-between to left most chips, then <b>jump throw</b>",
+                            images: [
+                                "images/dust_2/dust2_t_long_corner_smoke_1.jpg",
+                                "images/dust_2/dust2_t_long_corner_smoke_2.jpg",
+								"images/dust_2/dust2_t_long_corner_smoke_3.jpg"
+                            ]
+                        },
+                        {
+                            name: "[Long] Car Molly",
+                            description: "Jump on barrel, tuck in corner, aim at black spot on power box, then <b>jump throw</b>",
+                            images: [
+                                "images/dust_2/dust2_t_long_car_molly_1.jpg",
+                                "images/dust_2/dust2_t_long_car_molly_2.jpg",
+								"images/dust_2/dust2_t_long_car_molly_3.jpg"
+                            ]
+                        },
+                        {
+                            name: "[Long] CT Smoke from long",
+                            description: "While aim to left of antenna, the do <b>running throw</b>",
+                            images: [
+                                "images/dust_2/dust2_t_long_CT_smoke_1.jpg"
+                            ]
+                        },
+                        {
+                            name: "[Short] Site nade",
+                            description: "Make sure you can just see the red sign, aim at tree leaves, then do a <b>running throw</b>",
+                            images: [
+                                "images/dust_2/dust2_t_short_site_molly_1.jpg"
+                            ]
+                        },
+                        {
+                            name: "[B-Site] Window smoke",
+                            description: "Tuck into corner at uppers, aim at dot on wall, then do a <b>jumping throw</b>",
+                            images: [
+                                "images/dust_2/dust2_t_b_1.jpg",
+								"images/dust_2/dust2_t_b_2.jpg",
+								"images/dust_2/dust2_t_b_window_1.jpg"
+                            ]
+                        },
+                        {
+                            name: "[B-Site] Door smoke",
+                            description: "Tuck into corner at uppers, aim at dot on wall, then do a <b>jumping throw</b>",
+                            images: [
+                                "images/dust_2/dust2_t_b_1.jpg",
+								"images/dust_2/dust2_t_b_2.jpg",
+								"images/dust_2/dust2_t_b_door_1.jpg"
+                            ]
+                        }
+                    ],
+                    CT: [
+                        {
+                            name: "Long Corner Smoke",
+                            description: "Line up with end of wall, aim at in-between to left most chips, then jump throw",
+                            images: [
+                                "images/dust2_t_long_corner_smoke_1.jpg",
+                                "images/dust2_t_long_corner_smoke_2.jpg",
+								"images/dust2_t_long_corner_smoke_3.jpg"
+                            ]
+                        },
+                        {
+                            name: "B Site Retake Molotov",
+                            description: "Molotov for B site retake",
+                            images: [
+                                "images/dust2_ct_b_molotov_1.jpg",
+                                "images/dust2_ct_b_molotov_2.jpg"
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                name: "Nuke",
+                sides: {
+                    T: [
+                        {
+                            name: "Long Doors Smoke",
+                            description: "Smoke for long doors",
+                            images: [
+                                "images/dust2_t_long_smoke_1.jpg",
+                                "images/dust2_t_long_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "B Tunnel Smoke",
+                            description: "Blocks B tunnel vision",
+                            images: [
+                                "images/dust2_t_b_smoke_1.jpg",
+                                "images/dust2_t_b_smoke_2.jpg"
+                            ]
+                        }
+                    ],
+                    CT: [
+                        {
+                            name: "Long Hold Smoke",
+                            description: "Smoke to hold long from CT",
+                            images: [
+                                "images/dust2_ct_long_smoke_1.jpg",
+                                "images/dust2_ct_long_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "B Site Retake Molotov",
+                            description: "Molotov for B site retake",
+                            images: [
+                                "images/dust2_ct_b_molotov_1.jpg",
+                                "images/dust2_ct_b_molotov_2.jpg"
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                name: "Mirage",
+                sides: {
+                    T: [
+                        {
+                            name: "[SPAWN] Window smoke",
+                            description: "Tuck into corner by the bin, then aim above right door on the pink wall, then do a <b>jumping throw while running right</b>. This one takes practice.",
+                            images: [
+                                "images/mirage/mirage_t_spawn_window_1.jpg",
+                                "images/mirage/mirage_t_spawn_window_2.jpg",
+								"images/mirage/mirage_t_spawn_window_3.jpg"
+                            ]
+                        },
+                        {
+                            name: "[SPAWN] Connector smoke",
+                            description: "Tuck into corner by the bin, then aim at spot on the rug, then do a <b>jumping throw</b>",
+                            images: [
+                                "images/mirage/mirage_t_spawn_window_1.jpg",
+                                "images/mirage/mirage_t_spawn_window_2.jpg",
+								"images/mirage/mirage_t_spawn_connector_1.jpg"
+                            ]
+                        },
+                        {
+                            name: "[MID] Window smoke",
+                            description: "Tuck into the right side of cart, <b>crouch</b>, then do a <b>Normal throw</b>",
+                            images: [
+                                "images/mirage/mirage_t_mid_window_1.jpg",
+                                "images/mirage/mirage_t_mid_window_2.jpg",
+								"images/mirage/mirage_t_mid_window_3.jpg"
+                            ]
+                        },
+                        {
+                            name: "[MID] Cat smoke",
+                            description: "Tuck into the left side of cart, aim at antenna, then do a <b>Normal throw</b>",
+                            images: [
+                                "images/mirage/mirage_t_mid_cat_1.jpg",
+                                "images/mirage/mirage_t_mid_cat_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "[MID] Jungle smoke",
+                            description: "Tuck into the left side of cart, aim at left palm tree leaves, then do a <b>Normal throw</b>",
+                            images: [
+                                "images/mirage/mirage_t_mid_cat_1.jpg",
+                                "images/mirage/mirage_t_mid_jungle_1.jpg",
+								"images/mirage/mirage_t_mid_jungle_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "[MID] Ticket smoke",
+                            description: "Tuck into the left side of cart, aim at left palm tree leaves, then do a <b>Jump throw</b>",
+                            images: [
+                                "images/mirage/mirage_t_mid_cat_1.jpg",
+                                "images/mirage/mirage_t_mid_ticket_1.jpg",
+								"images/mirage/mirage_t_mid_ticket_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "[A-Site] Ticket smoke",
+                            description: "Stand at the point of the wall corner, aim at the pole sticking out of the building (aim as close to the building as you can), then do a <b>Jump throw</b>",
+                            images: [
+                                "images/mirage/mirage_t_a_ticket_1.jpg",
+                                "images/mirage/mirage_t_a_ticket_2.jpg",
+								"images/mirage/mirage_t_a_ticket_3.jpg"
+                            ]
+                        },
+                        {
+                            name: "[A-Site] Jungle smoke",
+                            description: "Tuck into the wall corner, aim alil to the left of the pillar, then do a <b>regular throw</b>",
+                            images: [
+                                "images/mirage/mirage_t_a_stairs_1.jpg",
+                                "images/mirage/mirage_t_a_stairs_2.jpg",
+								"images/mirage/mirage_t_a_stairs_3.jpg",
+								"images/mirage/mirage_t_a_jungle_1.jpg"
+                            ]
+                        },
+                        {
+                            name: "[B-Site] Window smoke",
+                            description: "Tuck into the wall corner, aim abit to the top right of the tower, then do a <b>jumping throw</b>",
+                            images: [
+                                "images/mirage/mirage_t_b_window_1.jpg",
+                                "images/mirage/mirage_t_b_window_2.jpg",
+								"images/mirage/mirage_t_b_window_3.jpg"
+                            ]
+                        },
+                        {
+                            name: "[B-Site] Door smoke",
+                            description: "Tuck into the wall corner, aim above the middle window on the right side of the tower, then do a <b>jumping throw</b>",
+                            images: [
+                                "images/mirage/mirage_t_b_window_1.jpg",
+                                "images/mirage/mirage_t_b_door_1.jpg",
+								"images/mirage/mirage_t_b_door_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "[B-Site] Cat smoke",
+                            description: "Tuck into the wall corner, aim just below the the left rim corner of the tower, then do a <b>regular throw</b>",
+                            images: [
+                                "images/mirage/mirage_t_b_window_1.jpg",
+                                "images/mirage/mirage_t_b_cat_1.jpg",
+								"images/mirage/mirage_t_b_cat_2.jpg"
+                            ]
+                        }
+                    ],
+                    CT: [
+                        {
+                            name: "Long Hold Smoke",
+                            description: "Smoke to hold long from CT",
+                            images: [
+                                "images/dust2_ct_long_smoke_1.jpg",
+                                "images/dust2_ct_long_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "B Site Retake Molotov",
+                            description: "Molotov for B site retake",
+                            images: [
+                                "images/dust2_ct_b_molotov_1.jpg",
+                                "images/dust2_ct_b_molotov_2.jpg"
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                name: "Inferno",
+                sides: {
+                    T: [
+                        {
+                            name: "Long Doors Smoke",
+                            description: "Smoke for long doors",
+                            images: [
+                                "images/dust2_t_long_smoke_1.jpg",
+                                "images/dust2_t_long_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "B Tunnel Smoke",
+                            description: "Blocks B tunnel vision",
+                            images: [
+                                "images/dust2_t_b_smoke_1.jpg",
+                                "images/dust2_t_b_smoke_2.jpg"
+                            ]
+                        }
+                    ],
+                    CT: [
+                        {
+                            name: "Long Hold Smoke",
+                            description: "Smoke to hold long from CT",
+                            images: [
+                                "images/dust2_ct_long_smoke_1.jpg",
+                                "images/dust2_ct_long_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "B Site Retake Molotov",
+                            description: "Molotov for B site retake",
+                            images: [
+                                "images/dust2_ct_b_molotov_1.jpg",
+                                "images/dust2_ct_b_molotov_2.jpg"
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                name: "Overpass",
+                sides: {
+                    T: [
+                        {
+                            name: "Long Doors Smoke",
+                            description: "Smoke for long doors",
+                            images: [
+                                "images/dust2_t_long_smoke_1.jpg",
+                                "images/dust2_t_long_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "B Tunnel Smoke",
+                            description: "Blocks B tunnel vision",
+                            images: [
+                                "images/dust2_t_b_smoke_1.jpg",
+                                "images/dust2_t_b_smoke_2.jpg"
+                            ]
+                        }
+                    ],
+                    CT: [
+                        {
+                            name: "Long Hold Smoke",
+                            description: "Smoke to hold long from CT",
+                            images: [
+                                "images/dust2_ct_long_smoke_1.jpg",
+                                "images/dust2_ct_long_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "B Site Retake Molotov",
+                            description: "Molotov for B site retake",
+                            images: [
+                                "images/dust2_ct_b_molotov_1.jpg",
+                                "images/dust2_ct_b_molotov_2.jpg"
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                name: "Vertigo",
+                sides: {
+                    T: [
+                        {
+                            name: "Long Doors Smoke",
+                            description: "Smoke for long doors",
+                            images: [
+                                "images/dust2_t_long_smoke_1.jpg",
+                                "images/dust2_t_long_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "B Tunnel Smoke",
+                            description: "Blocks B tunnel vision",
+                            images: [
+                                "images/dust2_t_b_smoke_1.jpg",
+                                "images/dust2_t_b_smoke_2.jpg"
+                            ]
+                        }
+                    ],
+                    CT: [
+                        {
+                            name: "Long Hold Smoke",
+                            description: "Smoke to hold long from CT",
+                            images: [
+                                "images/dust2_ct_long_smoke_1.jpg",
+                                "images/dust2_ct_long_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "B Site Retake Molotov",
+                            description: "Molotov for B site retake",
+                            images: [
+                                "images/dust2_ct_b_molotov_1.jpg",
+                                "images/dust2_ct_b_molotov_2.jpg"
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                name: "Basalt",
+                sides: {
+                    T: [
+                        {
+                            name: "Long Doors Smoke",
+                            description: "Smoke for long doors",
+                            images: [
+                                "images/dust2_t_long_smoke_1.jpg",
+                                "images/dust2_t_long_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "B Tunnel Smoke",
+                            description: "Blocks B tunnel vision",
+                            images: [
+                                "images/dust2_t_b_smoke_1.jpg",
+                                "images/dust2_t_b_smoke_2.jpg"
+                            ]
+                        }
+                    ],
+                    CT: [
+                        {
+                            name: "Long Hold Smoke",
+                            description: "Smoke to hold long from CT",
+                            images: [
+                                "images/dust2_ct_long_smoke_1.jpg",
+                                "images/dust2_ct_long_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "B Site Retake Molotov",
+                            description: "Molotov for B site retake",
+                            images: [
+                                "images/dust2_ct_b_molotov_1.jpg",
+                                "images/dust2_ct_b_molotov_2.jpg"
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                name: "Office",
+                sides: {
+                    T: [
+                        {
+                            name: "Long Doors Smoke",
+                            description: "Smoke for long doors",
+                            images: [
+                                "images/dust2_t_long_smoke_1.jpg",
+                                "images/dust2_t_long_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "B Tunnel Smoke",
+                            description: "Blocks B tunnel vision",
+                            images: [
+                                "images/dust2_t_b_smoke_1.jpg",
+                                "images/dust2_t_b_smoke_2.jpg"
+                            ]
+                        }
+                    ],
+                    CT: [
+                        {
+                            name: "Long Hold Smoke",
+                            description: "Smoke to hold long from CT",
+                            images: [
+                                "images/dust2_ct_long_smoke_1.jpg",
+                                "images/dust2_ct_long_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "B Site Retake Molotov",
+                            description: "Molotov for B site retake",
+                            images: [
+                                "images/dust2_ct_b_molotov_1.jpg",
+                                "images/dust2_ct_b_molotov_2.jpg"
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                name: "Italy",
+                sides: {
+                    T: [
+                        {
+                            name: "Long Doors Smoke",
+                            description: "Smoke for long doors",
+                            images: [
+                                "images/dust2_t_long_smoke_1.jpg",
+                                "images/dust2_t_long_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "B Tunnel Smoke",
+                            description: "Blocks B tunnel vision",
+                            images: [
+                                "images/dust2_t_b_smoke_1.jpg",
+                                "images/dust2_t_b_smoke_2.jpg"
+                            ]
+                        }
+                    ],
+                    CT: [
+                        {
+                            name: "Long Hold Smoke",
+                            description: "Smoke to hold long from CT",
+                            images: [
+                                "images/dust2_ct_long_smoke_1.jpg",
+                                "images/dust2_ct_long_smoke_2.jpg"
+                            ]
+                        },
+                        {
+                            name: "B Site Retake Molotov",
+                            description: "Molotov for B site retake",
+                            images: [
+                                "images/dust2_ct_b_molotov_1.jpg",
+                                "images/dust2_ct_b_molotov_2.jpg"
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                name: "How to practice",
+                sides: {
+                    T: [
+                        {
+                            name: "T How to practice",
+                            description: "Open a practice competitve match on the stage and then run '<i>exec practice</i>'",
+                            images: []
+                        }
+                    ],
+                    CT: [
+                        {
+                            name: "CT How to practice",
+                            description: "Open a practice competitve match on the stage and then run '<i>exec practice</i>'",
+                            images: []
+                        }
+                    ]
+                }
             }
         ];
+
+        let selectedSide = null;
+        let selectedNade = null;
 
         // Function to create stage menu
         function createStageMenu() {
@@ -196,25 +741,59 @@
             stages.forEach(stage => {
                 const button = document.createElement('button');
                 button.textContent = stage.name;
-                button.onclick = () => displayNadeMenu(stage);
+                button.onclick = () => {
+                    document.querySelectorAll('#stage-menu button').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    createSideMenu(stage);
+                };
                 menu.appendChild(button);
             });
-            document.getElementById('nade-menu').style.display = 'none';
-            document.getElementById('content').innerHTML = '';
+            createSideMenu(stages[0]); // Default to first stage
+            document.querySelector('#stage-menu button').classList.add('active');
         }
 
-        // Function to display nade menu for selected stage
-        function displayNadeMenu(stage) {
+        // Function to create side menu (CT or T)
+        function createSideMenu(stage) {
+            const sideMenu = document.getElementById('side-menu');
+            sideMenu.innerHTML = '';
+            ['T', 'CT'].forEach(side => {
+                const button = document.createElement('button');
+                button.textContent = side;
+                button.onclick = () => {
+                    selectedSide = side;
+                    document.querySelectorAll('#side-menu button').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    displayNadeMenu(stage, side);
+                };
+                sideMenu.appendChild(button);
+            });
+            // Default to T side
+            selectedSide = 'T';
+            document.querySelector('#side-menu button').classList.add('active');
+            displayNadeMenu(stage, 'T');
+        }
+
+        // Function to display nade menu for selected stage and side
+        function displayNadeMenu(stage, side) {
             const nadeMenu = document.getElementById('nade-menu');
             nadeMenu.innerHTML = '';
-            stage.nades.forEach(nade => {
+            const nades = stage.sides[side] || [];
+            nades.forEach(nade => {
                 const button = document.createElement('button');
                 button.textContent = nade.name;
-                button.onclick = () => displayNadeDetails(nade);
+                button.onclick = () => {
+                    selectedNade = nade.name;
+                    document.querySelectorAll('#nade-menu button').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    displayNadeDetails(nade);
+                };
+                if (nade.name === selectedNade) {
+                    button.classList.add('active');
+                }
                 nadeMenu.appendChild(button);
             });
-            nadeMenu.style.display = 'flex';
-            document.getElementById('content').innerHTML = '';
+            nadeMenu.style.display = nades.length > 0 ? 'flex' : 'none';
+            document.getElementById('content').innerHTML = nades.length === 0 ? '<p>No nades available for this side.</p>' : '';
         }
 
         // Function to display nade details with images
@@ -234,6 +813,9 @@
                     const modal = document.getElementById('image-modal');
                     const modalImg = document.getElementById('modal-image');
                     modalImg.src = img.src;
+                    modalImg.style.transform = 'scale(1)';
+                    modalImg.style.transformOrigin = 'center center';
+                    modalImg.dataset.zoomed = 'false';
                     modal.style.display = 'flex';
                 });
             });
@@ -248,6 +830,31 @@
         document.getElementById('image-modal').addEventListener('click', (e) => {
             if (e.target === e.currentTarget) {
                 document.getElementById('image-modal').style.display = 'none';
+            }
+        });
+
+        // Zoom functionality on image click
+        document.getElementById('modal-image').addEventListener('click', (e) => {
+            const img = e.target;
+            const isZoomed = img.dataset.zoomed === 'true';
+
+            if (!isZoomed) {
+                // Calculate click position relative to image
+                const rect = img.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const xPercent = (x / rect.width) * 100;
+                const yPercent = (y / rect.height) * 100;
+
+                // Zoom to 400% centered on click
+                img.style.transform = 'scale(4)';
+                img.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+                img.dataset.zoomed = 'true';
+            } else {
+                // Reset to default
+                img.style.transform = 'scale(1)';
+                img.style.transformOrigin = 'center center';
+                img.dataset.zoomed = 'false';
             }
         });
 
