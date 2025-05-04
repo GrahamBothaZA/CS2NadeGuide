@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS2 Nade Guide</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #ff9500;
+        }
+        #stage-menu, #nade-menu {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        button {
+            background-color: #333;
+            color: #e0e0e0;
+            border: 1px solid #ff9500;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #ff9500;
+            color: #1a1a1a;
+        }
+        #content {
+            text-align: center;
+        }
+        .nade-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .nade-image {
+            cursor: pointer;
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ff9500;
+            border-radius: 3px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border: 2px solid #ff9500;
+            border-radius: 5px;
+        }
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #ff9500;
+            font-size: 30px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CS2 Nade Guide</h1>
+        <div id="stage-menu"></div>
+        <div id="nade-menu" style="display: none;"></div>
+        <div id="content"></div>
+    </div>
+
+    <div id="image-modal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img id="modal-image" src="" alt="Enlarged image">
+    </div>
+
+    <script>
+        // Sample data for stages and nades
+        const stages = [
+            {
+                name: "Mirage",
+                nades: [
+                    {
+                        name: "A Site Smoke",
+                        description: "Smoke for A site from T spawn",
+                        images: [
+                            "images/mirage_a_smoke_1.jpg",
+                            "images/mirage_a_smoke_2.jpg",
+                            "images/mirage_a_smoke_3.jpg"
+                        ]
+                    },
+                    {
+                        name: "Mid Window Smoke",
+                        description: "Blocks mid window sightline",
+                        images: [
+                            "images/mirage_mid_smoke_1.jpg",
+                            "images/mirage_mid_smoke_2.jpg"
+                        ]
+                    },
+                    {
+                        name: "B Site Molotov",
+                        description: "Molotov for B site from apps",
+                        images: [
+                            "images/mirage_b_molotov_1.jpg",
+                            "images/mirage_b_molotov_2.jpg"
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Inferno",
+                nades: [
+                    {
+                        name: "Banana Smoke",
+                        description: "Smoke for banana control",
+                        images: [
+                            "images/inferno_banana_smoke_1.jpg",
+                            "images/inferno_banana_smoke_2.jpg"
+                        ]
+                    },
+                    {
+                        name: "Library Molotov",
+                        description: "Clears library corner",
+                        images: [
+                            "images/inferno_library_molotov_1.jpg",
+                            "images/inferno_library_molotov_2.jpg"
+                        ]
+                    },
+                    {
+                        name: "A Site Flash",
+                        description: "Flash for A site push",
+                        images: [
+                            "images/inferno_a_flash_1.jpg",
+                            "images/inferno_a_flash_2.jpg"
+                        ]
+                    }
+                ]
+            },
+            {
+                name: "Dust II",
+                nades: [
+                    {
+                        name: "Long Doors Smoke",
+                        description: "Smoke for long doors",
+                        images: [
+                            "images/dust2_long_smoke_1.jpg",
+                            "images/dust2_long_smoke_2.jpg"
+                        ]
+                    },
+                    {
+                        name: "B Tunnel Smoke",
+                        description: "Blocks B tunnel vision",
+                        images: [
+                            "images/dust2_b_smoke_1.jpg",
+                            "images/dust2_b_smoke_2.jpg"
+                        ]
+                    },
+                    {
+                        name: "Mid Flash",
+                        description: "Flash over mid doors",
+                        images: [
+                            "images/dust2_mid_flash_1.jpg",
+                            "images/dust2_mid_flash_2.jpg"
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // Function to create stage menu
+        function createStageMenu() {
+            const menu = document.getElementById('stage-menu');
+            menu.innerHTML = '';
+            stages.forEach(stage => {
+                const button = document.createElement('button');
+                button.textContent = stage.name;
+                button.onclick = () => displayNadeMenu(stage);
+                menu.appendChild(button);
+            });
+            document.getElementById('nade-menu').style.display = 'none';
+            document.getElementById('content').innerHTML = '';
+        }
+
+        // Function to display nade menu for selected stage
+        function displayNadeMenu(stage) {
+            const nadeMenu = document.getElementById('nade-menu');
+            nadeMenu.innerHTML = '';
+            stage.nades.forEach(nade => {
+                const button = document.createElement('button');
+                button.textContent = nade.name;
+                button.onclick = () => displayNadeDetails(nade);
+                nadeMenu.appendChild(button);
+            });
+            nadeMenu.style.display = 'flex';
+            document.getElementById('content').innerHTML = '';
+        }
+
+        // Function to display nade details with images
+        function displayNadeDetails(nade) {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <h2>${nade.name}</h2>
+                <p>${nade.description}</p>
+                <div class="nade-details">
+                    ${nade.images.map(img => `<img class="nade-image" src="${img}" alt="${nade.name} image">`).join('')}
+                </div>
+            `;
+
+            // Add click event listeners to images for modal
+            document.querySelectorAll('.nade-image').forEach(img => {
+                img.addEventListener('click', () => {
+                    const modal = document.getElementById('image-modal');
+                    const modalImg = document.getElementById('modal-image');
+                    modalImg.src = img.src;
+                    modal.style.display = 'flex';
+                });
+            });
+        }
+
+        // Modal close functionality
+        document.querySelector('.modal-close').addEventListener('click', () => {
+            document.getElementById('image-modal').style.display = 'none';
+        });
+
+        // Close modal when clicking outside image
+        document.getElementById('image-modal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                document.getElementById('image-modal').style.display = 'none';
+            }
+        });
+
+        // Initialize the stage menu on page load
+        window.onload = createStageMenu;
+    </script>
+</body>
+</html>
